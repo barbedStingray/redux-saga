@@ -7,6 +7,7 @@ function App() {
   const elements = useSelector(store => store.elementList)
   const [newElement, setNewElement] = useState('');
   const planets = useSelector(store => store.planets);
+  const jokeData = useSelector(store => store.jokeData);
 
 
   const getElements = () => {
@@ -28,6 +29,7 @@ function App() {
   useEffect(() => {
     getElements();
     getPlanets();
+    getJoke();
   }, []);
 
   const addElement = () => {
@@ -57,6 +59,10 @@ function App() {
     dispatch({ type: 'FETCH_PLANETS' });
   }
 
+  const getJoke = () => {
+    dispatch({ type: 'TELL_A_JOKE'});
+  }
+
   return (
     <div>
       <h1>Atomic Elements</h1>
@@ -81,6 +87,12 @@ function App() {
             {planets.map((planet, index) => 
             <li key={index}>{planet.name}</li>)}
           </ul>
+
+      <h2>Today's Joke</h2>
+              {JSON.stringify(jokeData)}
+              {/* {jokeData.map((joke) => 
+              <p>{joke.category}</p>)} */}
+            
 
     </div>
   );

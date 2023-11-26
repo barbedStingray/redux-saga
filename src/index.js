@@ -68,6 +68,13 @@ const planets = (state = [], action) => {
     return state;
 }
 
+const jokeData = (state = [], action) => {
+    if(action.type === 'TELL_JOKE') {
+        return action.payload;
+    }
+    return state;
+} 
+
 // USING AN API
 
 function* getPlanets() {
@@ -82,6 +89,18 @@ function* getPlanets() {
     }
 }
 
+function* tellAJoke() {
+    try {
+        const response = yield axios.get('https://v2.jokeapi.dev/joke/Any');
+        console.log(`JOKE DATA response:`, response.data);
+        yield put({ type: 'TELL_JOKE', payload: response.data });
+
+    } catch (error) {
+        console.log(`error in telling jokes`, error);
+        alert(`getting jokes went wrong`);
+    }
+}
+
 // Step 3 - collect your sagas
 // this is the saga that will watch for actions
 // combines all of the sagas
@@ -92,6 +111,8 @@ function* rootSaga() {
     yield takeEvery('ADD_ELEMENT', postElement);
 
     yield takeLatest('FETCH_PLANETS', getPlanets);
+
+    yield takeLatest( 'TELL_A_JOKE', tellAJoke);
 }
 
 
@@ -104,7 +125,8 @@ const storeInstance = createStore(
     // reducer is a function that runs every time an action is dispatched
     combineReducers({
         elementList,
-        planets
+        planets,
+        jokeData
     }),
     applyMiddleware(sagaMiddleware, logger),
 );
